@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Demo</title>
+
+<meta charset=”utf-8” />
+
+<link rel="stylesheet"
+	href="/webjars/bootstrap/3.3.7-1/css/bootstrap.min.css" />
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<h3>Welcome Excel conversion.</h3>
+
+		</div>
+
+		<div class="row">
+			源文件:<input type="file" accept="application/msexcel" />
+		</div>
+
+		<div class="row">模版类型：模版一</div>
+
+		<div class="row">
+			目标文件:<input type="text" value="d:\\" readonly />
+		</div>
+		<div class="row">
+			<button>转换</button>
+			<a href="#" onclick="javascript:alert('ok');"></a>
+		</div>
+
+
+
+	</div>
+
+	<script src="/webjars/jquery/3.1.1/jquery.min.js"></script>
+	<script src="/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
+	<script th:src="@{/js/index.js}"></script>
+</body>
+</html>
