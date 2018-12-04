@@ -1,10 +1,12 @@
-package com.demo.exceldemomvn;
+package com.demo.exceldemomvn.controller;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.demo.exceldemomvn.util.FileHandleUtil;
 
 import java.io.IOException;
 
@@ -23,6 +25,9 @@ public class FileController {
             e.printStackTrace();
         }
 
+        
+        //doEx
+        
         return "文件存放路径为" + uploadPath;
 
     }
