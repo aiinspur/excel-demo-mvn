@@ -16,21 +16,20 @@
 
 		</div>
 
-		<div class="row">
-			源文件:<input type="file" accept="application/msexcel" />
-		</div>
+		<form action="upload" method="POST" enctype="multipart/form-data">
+			<div class="row">
+				源文件：<input type="file" name="file"/>
+			</div>
 
-		<div class="row">模版类型：模版一</div>
+			<div class="row">模版类型：模版一</div>
 
-		<div class="row">
-			目标文件:<input type="text" value="d:\\" readonly />
-		</div>
-		<div class="row">
-			<button>转换</button>
-			<a href="#" onclick="javascript:alert('ok');"></a>
-		</div>
-
-
+			<div class="row">
+				目标文件:<input type="text" value="d:\\" readonly />
+			</div>
+			<div class="row">
+				<input type="submit" value="转换"/>
+			</div>
+		</form>
 
 	</div>
 
