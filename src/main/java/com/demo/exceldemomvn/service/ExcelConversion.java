@@ -1,10 +1,13 @@
 package com.demo.exceldemomvn.service;
 
+
 import com.demo.exceldemomvn.util.PoiUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
+import static org.springframework.util.Assert.isTrue;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.util.Assert.isTrue;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
+
+import com.demo.exceldemomvn.util.PoiUtil;
+
 
 @Service
 public class ExcelConversion implements FileConversion {
@@ -22,25 +32,9 @@ public class ExcelConversion implements FileConversion {
 	private final Logger logger = LoggerFactory.getLogger(ExcelConversion.class);
 
 	@Override
-	public void conversion(String srcFile, String destinationFilePath) {
-		//File srcFile_ = null;
-		String absolutePath = "";
-		File file = null;
-		try {
-			file = new File(ResourceUtils.getURL("classpath:").getPath());
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException("获取根目录失败，无法创建上传目录！");
-		}
-
-		absolutePath = file.getAbsolutePath();
-		File uploadFile = new File(absolutePath, srcFile);
-
-		/*try {
-			srcFile_ = ResourceUtils.getFile("classpath:" + srcFile);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}*/
-		isTrue(uploadFile.exists(), "Src File not exits.");
+	public void conversion(String srcFile, String destinationFilePath) throws Exception {
+		File srcFile_ = ResourceUtils.getFile("classpath:" + srcFile);
+		isTrue(srcFile_.exists(), "Src File not exits.");
 
 		if (!new File(destinationFilePath).exists()) {
 			new File(destinationFilePath).mkdirs();
@@ -53,6 +47,7 @@ public class ExcelConversion implements FileConversion {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
 
 		mapping.forEach((key, val) -> {
 			System.out.println(key + ":" + val);

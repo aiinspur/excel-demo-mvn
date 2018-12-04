@@ -3,3 +3,4 @@
 .project
 .settings
 .classpath
+/src/main/resources/excel_template
