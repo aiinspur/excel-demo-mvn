@@ -11,6 +11,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.slf4j.Logger;
@@ -53,7 +57,6 @@ public class ExcelConversion implements FileConversion {
 			destWb = WorkbookFactory.create(inp);
 		}
 
-		FileOutputStream fileOut = new FileOutputStream(destFile);
 		
 		for (String key : map.keySet()) {
 			String val = map.get(key);
@@ -61,11 +64,15 @@ public class ExcelConversion implements FileConversion {
 				continue;
 			}
 			//PoiUtil.copySheetFromSheet(srcWb.getSheet(val), destWb.getSheet(key), new File(destFile), destWb);
-			PoiUtil.copyRowData(destWb, destWb.getSheet(key), srcWb.getSheet(val));
+			
+			FileOutputStream fileOut = new FileOutputStream(destFile);
+			Sheet destSheet = destWb.getSheet(key);
+			copyRowData(destSheet, srcWb.getSheet(val));
 			destWb.write(fileOut);
+			fileOut.flush();
+			System.out.println("---------"+destSheet.getSheetName());
+			fileOut.close();
 		}
-		
-		fileOut.close();
 		
 		if (srcWb != null) {
 			srcWb.close();
@@ -75,6 +82,55 @@ public class ExcelConversion implements FileConversion {
 			destWb.close();
 		}
 
+	}
+	
+	public void copyRowData(Sheet destSheet, Sheet srcSheet) {
+		int firstRowNum = srcSheet.getFirstRowNum();
+		int lastRowNum = srcSheet.getLastRowNum();
+
+		for (int i = firstRowNum; i < lastRowNum; i++) {
+			Row srcRow = srcSheet.getRow(i);
+			Row destRow = destSheet.getRow(i);
+
+			if (srcRow == null || destRow == null) {
+				continue;
+			}
+
+			short minColIx = srcRow.getFirstCellNum();
+			short maxColIx = srcRow.getLastCellNum();
+			for (short j = minColIx; j < maxColIx; j++) {
+				Cell cell = srcRow.getCell(j);
+
+				Cell destCell = destRow.getCell(j);
+				if (cell == null || destCell == null) {
+					continue;
+				}
+
+				CellType cellType = cell.getCellType();
+				switch (cellType) {
+				case STRING:
+					destCell.setCellValue(cell.getStringCellValue());
+					break;
+				case NUMERIC:
+					destCell.setCellValue(cell.getNumericCellValue());
+					break;
+				case FORMULA:
+					destCell.setCellValue(cell.getCellFormula());
+					break;
+				case BOOLEAN:
+					destCell.setCellValue(cell.getBooleanCellValue());
+					break;
+				case ERROR:
+					destCell.setCellValue(cell.getErrorCellValue());
+					break;
+				default:
+					destCell.setCellValue(cell.getStringCellValue());
+					break;
+				}
+			}
+			
+			
+		}
 	}
 
 	/**

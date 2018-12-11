@@ -52,7 +52,7 @@ public class PoiUtil {
 //			FileOutputStream fileOut = new FileOutputStream(destFile);
 //			wb.write(fileOut);
 //		}
-		copyRowData(destWb, destSheet, srcSheet);
+		copyRowData( destSheet, srcSheet);
 
 		FileOutputStream fileOut = new FileOutputStream(destFile);
 		destWb.write(fileOut);
@@ -91,7 +91,7 @@ public class PoiUtil {
 		});
 	}
 
-	public static void copyRowData(Workbook destWorkBook, Sheet destSheet, Sheet srcSheet) {
+	public static void copyRowData(Sheet destSheet, Sheet srcSheet) {
 		int firstRowNum = srcSheet.getFirstRowNum();
 		int lastRowNum = srcSheet.getLastRowNum();
 
