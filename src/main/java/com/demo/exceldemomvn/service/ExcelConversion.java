@@ -41,7 +41,6 @@ public class ExcelConversion implements FileConversion {
 			wb.write(fileOut);
 		}
 
-		// TODO
 		Map<String, String> map = getMapping2(dataDate);
 
 		Workbook srcWb = null;
@@ -61,16 +60,16 @@ public class ExcelConversion implements FileConversion {
 			}
 			PoiUtil.copySheetFromSheet(srcWb.getSheet(val), destWb.getSheet(key), new File(destFile), destWb);
 		}
+		
+		if (srcWb != null) {
+			srcWb.close();
+		}
+		
+		if (destWb != null) {
+			destWb.close();
+		}
 
 	}
-
-//	private Workbook getWorkbook(String file) throws Exception {
-//		Workbook wb = null;
-//		try (InputStream inp = new FileInputStream(file)) {
-//			wb = WorkbookFactory.create(inp);
-//		}
-//		return wb;
-//	}
 
 	/**
 	 * 手动维护映射关系
