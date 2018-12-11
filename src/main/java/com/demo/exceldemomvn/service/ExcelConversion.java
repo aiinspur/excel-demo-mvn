@@ -53,13 +53,19 @@ public class ExcelConversion implements FileConversion {
 			destWb = WorkbookFactory.create(inp);
 		}
 
+		FileOutputStream fileOut = new FileOutputStream(destFile);
+		
 		for (String key : map.keySet()) {
 			String val = map.get(key);
 			if (val.equals("")) {
 				continue;
 			}
-			PoiUtil.copySheetFromSheet(srcWb.getSheet(val), destWb.getSheet(key), new File(destFile), destWb);
+			//PoiUtil.copySheetFromSheet(srcWb.getSheet(val), destWb.getSheet(key), new File(destFile), destWb);
+			PoiUtil.copyRowData(destWb, destWb.getSheet(key), srcWb.getSheet(val));
+			destWb.write(fileOut);
 		}
+		
+		fileOut.close();
 		
 		if (srcWb != null) {
 			srcWb.close();
