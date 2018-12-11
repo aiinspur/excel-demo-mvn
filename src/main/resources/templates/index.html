@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>Demo</title>
+<title>Excel文件转换小工具</title>
 
 <meta charset=”utf-8” />
 
@@ -12,7 +12,7 @@
 <body>
 	<div class="container">
 		<div class="row">
-			<h3>Welcome Excel conversion.</h3>
+			<h3>欢迎使用Excel文件转换小工具</h3>
 
 		</div>
 
@@ -20,11 +20,17 @@
 			<div class="row">
 				源文件：<input type="file" name="file"/>
 			</div>
+			<div class="row">
+				头寸日报系统原始表样数据日期：<input type="text" id="srcDate" name="srcDate" value="20181120" th:value="${curDate}"/>
+			</div>
+			<div class="row">
+				源文件存储目录:<input type="text" value="/tmp/test/upload/" id="srcFilePath" name="srcFilePath"  />
+			</div>
 
 			<div class="row">模版类型：模版一</div>
 
 			<div class="row">
-				目标文件:<input type="text" value="d:\\" readonly />
+				目标文件存储目录:<input type="text" value="/tmp/test/" id="destinationFile" name="destinationFile" />
 			</div>
 			<div class="row">
 				<input type="submit" value="转换"/>
