@@ -1,28 +1,17 @@
 package com.demo.exceldemomvn.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import com.demo.exceldemomvn.util.PoiUtil;
+import org.apache.poi.ss.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Service;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
-
-import com.demo.exceldemomvn.util.PoiUtil;
 
 @Service
 public class ExcelConversion implements FileConversion {
@@ -39,7 +28,7 @@ public class ExcelConversion implements FileConversion {
 
 		String destFile = destinationFilePath + File.separator + "提供行领导" + dataDate + ".xls";
 
-		try (InputStream inp = new FileInputStream(ResourceUtils.getFile("classpath:excel_template/template_1.xls"))) {
+		try (InputStream inp = new ClassPathResource("excel_template/template_1.xls").getInputStream()) {
 			Workbook wb = WorkbookFactory.create(inp);
 			FileOutputStream fileOut = new FileOutputStream(destFile);
 			wb.write(fileOut);
