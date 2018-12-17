@@ -32,7 +32,7 @@ public class FileHandleUtil {
 			path.mkdirs();
 		}
 
-		String resultPath = filepath + transFileName(filename);
+		String resultPath = filepath + File.separator + transFileName(filename);
 
 		// 存文件
 		File uploadFile = new File(resultPath);
