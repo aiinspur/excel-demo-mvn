@@ -4,7 +4,6 @@ import com.demo.exceldemomvn.util.PoiUtil;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -19,19 +18,23 @@ public class ExcelConversion implements FileConversion {
 	private final Logger logger = LoggerFactory.getLogger(ExcelConversion.class);
 
 	@Override
-	public void conversion(String srcFile, String destinationFilePath, String dataDate) throws Exception {
-		logger.info("src file:" + srcFile + ";destinationFilePath:" + destinationFilePath);
+	public void conversion(String srcFile, String destFilePath, String dataDate) throws Exception {
+		logger.info("src file:" + srcFile + ";destFilePath:" + destFilePath);
 
-		if (!new File(destinationFilePath).exists()) {
-			new File(destinationFilePath).mkdirs();
+		if (!new File(destFilePath).exists()) {
+			new File(destFilePath).mkdirs();
 		}
+		Workbook wb = null;
+		FileOutputStream fileOut_ = null;
+		String destFile = destFilePath + File.separator + "提供行领导" + dataDate + ".xls";
 
-		String destFile = destinationFilePath + File.separator + "提供行领导" + dataDate + ".xls";
-
-		try (InputStream inp = new ClassPathResource("excel_template/template_1.xls").getInputStream()) {
-			Workbook wb = WorkbookFactory.create(inp);
-			FileOutputStream fileOut = new FileOutputStream(destFile);
-			wb.write(fileOut);
+		try (InputStream inp = new FileInputStream("D:\\excelTool\\template\\template_1.xls")) {
+			wb = WorkbookFactory.create(inp);
+			fileOut_ = new FileOutputStream(destFile);
+			wb.write(fileOut_);
+		}finally {
+			wb.close();
+			fileOut_.close();
 		}
 
 		Map<String, String> map = getMapping2(dataDate);
@@ -77,7 +80,7 @@ public class ExcelConversion implements FileConversion {
 		int firstRowNum = srcSheet.getFirstRowNum();
 		int lastRowNum = srcSheet.getLastRowNum();
 
-		for (int i = firstRowNum; i < lastRowNum; i++) {
+		for (int i = firstRowNum; i <= lastRowNum; i++) {
 			Row srcRow = srcSheet.getRow(i);
 			Row destRow = destSheet.getRow(i);
 
@@ -99,21 +102,27 @@ public class ExcelConversion implements FileConversion {
 				switch (cellType) {
 				case STRING:
 					destCell.setCellValue(cell.getStringCellValue());
+					destCell.setCellType(CellType.STRING);
 					break;
 				case NUMERIC:
 					destCell.setCellValue(cell.getNumericCellValue());
+					destCell.setCellType(CellType.NUMERIC);
 					break;
 				case FORMULA:
-					destCell.setCellValue(cell.getCellFormula());
+					destCell.setCellFormula(cell.getCellFormula());
+					destCell.setCellType(CellType.FORMULA);
 					break;
 				case BOOLEAN:
 					destCell.setCellValue(cell.getBooleanCellValue());
+					destCell.setCellType(CellType.BOOLEAN);
 					break;
 				case ERROR:
 					destCell.setCellValue(cell.getErrorCellValue());
+					destCell.setCellType(CellType.ERROR);
 					break;
 				default:
 					destCell.setCellValue(cell.getStringCellValue());
+					destCell.setCellType(CellType.STRING);
 					break;
 				}
 			}
