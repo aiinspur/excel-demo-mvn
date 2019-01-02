@@ -25,28 +25,22 @@ public class IndexController {
 	@Autowired
 	FileConversion fileConversion;
 
-//	@Value("${destinationFile:/tmp/test/}")
-//	private String destinationFile;
-//
-//	@Value("${srcFilePath:/tmp/test/upload/}")
-//	private String srcFilePath;
-
 	@ResponseBody
 	@RequestMapping(value = "/upload")
-	public String upload(@RequestParam("file") MultipartFile file, String srcFilePath, String destinationFile,@RequestParam("srcDate") String dataDate) {
-		logger.info("srcFilePath:" + srcFilePath + ";destinationFile:" + destinationFile);
+	public String upload(@RequestParam("file") MultipartFile file, String srcFilePath, String destFilePath,@RequestParam("srcDate") String dataDate) {
+		logger.info("srcFilePath:" + srcFilePath + "; destFilePath:" + destFilePath);
 
 		String uploadPath = "";
 		try {
 			uploadPath = FileHandleUtil.upload2(file.getInputStream(), file.getOriginalFilename(), srcFilePath);
 
-			fileConversion.conversion(uploadPath, destinationFile,dataDate);
+			fileConversion.conversion(uploadPath, destFilePath,dataDate);
 		} catch (Exception e) {
 			logger.info("upload Exception.");
 			e.printStackTrace();
 		}
 
-		return "处理成功。报表文件存储路径为：" + destinationFile;
+		return "处理成功。报表文件存储路径为：" + destFilePath;
 
 	}
 

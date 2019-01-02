@@ -24,13 +24,15 @@
 				头寸日报系统原始表样数据日期：<input type="text" id="srcDate" name="srcDate" value="20181120" th:value="${curDate}"/>
 			</div>
 			<div class="row">
-				源文件存储目录:<input type="text" value="D:/excelTool/upload/" id="srcFilePath" name="srcFilePath"  />
+				源文件存储目录:<input type="text" value="D:\excelTool\upload\" id="srcFilePath" name="srcFilePath" />
 			</div>
 
-			<div class="row">模版类型：模版一</div>
+			<div class="row">
+				模版存储目录：<input type="text" value="D:\excelTool\template" readonly="readonly" />
+			</div>
 
 			<div class="row">
-				目标文件存储目录:<input type="text" value="D:/excelTool/dest/" id="destinationFile" name="destinationFile" />
+				目标文件存储目录:<input type="text" value="D:\excelTool\dest\" id="destFilePath" name="destFilePath" />
 			</div>
 			<div class="row">
 				<input type="submit" value="转换"/>
