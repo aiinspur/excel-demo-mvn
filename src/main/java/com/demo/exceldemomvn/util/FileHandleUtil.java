@@ -8,6 +8,8 @@ import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.ResourceUtils;
 
 /**
@@ -16,34 +18,36 @@ import org.springframework.util.ResourceUtils;
  * @author xipengfei
  */
 public class FileHandleUtil {
-
+	private static final Logger logger = LoggerFactory.getLogger(FileHandleUtil.class);
 	/** 绝对路径 **/
 	private static String absolutePath = "";
-
-	/** 静态目录 **/
-	// private static String staticDir = "static";
 
 	/** 文件存放的目录 **/
 	private static String fileDir = "upload/";
 
-	public static String upload2(InputStream inputStream, String filename, String filepath) {
-		File path = new File(filepath);
-		if (!path.exists()) {
-			path.mkdirs();
-		}
-
-		String resultPath = filepath + File.separator + transFileName(filename);
-
-		// 存文件
-		File uploadFile = new File(resultPath);
+	public static String upload2(InputStream inputStream, String filename, String filepath) throws Exception {
+		logger.info("-------upload file Beginning-----");
+		String uploadAbsolutePath = "";
 		try {
+			File path = new File(filepath);
+			if (!path.exists()) {
+				path.mkdirs();
+			}
+
+			uploadAbsolutePath = filepath + File.separator + transFileName(filename);
+			logger.info("uploadAbsolutePath: " + uploadAbsolutePath);
+
+			// 存文件
+			File uploadFile = new File(uploadAbsolutePath);
+			logger.info("uploadFile-------> "+uploadFile.getAbsoluteFile());
+
 			FileUtils.copyInputStreamToFile(inputStream, uploadFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
+			logger.info("-------uploadFile Completed!!!-------");
+		} catch (Exception e) {
+			throw new Exception("upload2 Exception: "+e);
 		}
 
-		return resultPath;
+		return uploadAbsolutePath;
 	}
 
 	/**

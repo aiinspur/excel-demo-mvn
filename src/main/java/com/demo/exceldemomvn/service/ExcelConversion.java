@@ -19,60 +19,72 @@ public class ExcelConversion implements FileConversion {
 
 	@Override
 	public void conversion(String srcFile, String destFilePath, String dataDate) throws Exception {
-		logger.info("src file:" + srcFile + ";destFilePath:" + destFilePath);
+		logger.info("-------conversion file Begining-------");
+		logger.info("uploadAbsolutePath:" + srcFile + ";  destFilePath:" + destFilePath);
 
-		if (!new File(destFilePath).exists()) {
-			new File(destFilePath).mkdirs();
-		}
-		Workbook wb = null;
-		FileOutputStream fileOut_ = null;
-		String destFile = destFilePath + File.separator + "提供行领导" + dataDate + ".xls";
-
-		try (InputStream inp = new FileInputStream("D:\\excelTool\\template\\template_1.xls")) {
-			wb = WorkbookFactory.create(inp);
-			fileOut_ = new FileOutputStream(destFile);
-			wb.write(fileOut_);
-		}finally {
-			wb.close();
-			fileOut_.close();
-		}
-
-		Map<String, String> map = getMapping2(dataDate);
-
-		Workbook srcWb = null;
-		try (InputStream inp = new FileInputStream(srcFile)) {
-			srcWb = WorkbookFactory.create(inp);
-		}
-
-		Workbook destWb = null;
-		try (InputStream inp = new FileInputStream(destFile)) {
-			destWb = WorkbookFactory.create(inp);
-		}
-
-		
-		for (String key : map.keySet()) {
-			String val = map.get(key);
-			if (val.equals("")) {
-				continue;
+		try{
+			if (!new File(destFilePath).exists()) {
+				new File(destFilePath).mkdirs();
 			}
-			//PoiUtil.copySheetFromSheet(srcWb.getSheet(val), destWb.getSheet(key), new File(destFile), destWb);
-			
-			FileOutputStream fileOut = new FileOutputStream(destFile);
-			Sheet destSheet = destWb.getSheet(key);
-			copyRowData(destSheet, srcWb.getSheet(val));
-			destWb.write(fileOut);
-			fileOut.flush();
-			System.out.println("---------"+destSheet.getSheetName());
-			fileOut.close();
+			Workbook wb = null;
+			FileOutputStream fileOut_ = null;
+			String destFile = destFilePath + File.separator + "提供行领导" + dataDate + ".xls";
+			logger.info("destFile: " + destFile);
+
+			try (InputStream inp = new FileInputStream("D:\\excelTool\\template\\template_1.xls")) {
+				wb = WorkbookFactory.create(inp);
+				fileOut_ = new FileOutputStream(destFile);
+				wb.write(fileOut_);
+			}finally {
+				wb.close();
+				fileOut_.close();
+			}
+
+			Map<String, String> map = getMapping2(dataDate);
+			logger.info("get sheet mapping---> "+map.toString());
+
+			Workbook srcWb = null;
+			try (InputStream inp = new FileInputStream(srcFile)) {
+				srcWb = WorkbookFactory.create(inp);
+			}
+
+			Workbook destWb = null;
+			try (InputStream inp = new FileInputStream(destFile)) {
+				destWb = WorkbookFactory.create(inp);
+			}
+
+
+			logger.info("foreach sheetMap Begining--->");
+			for (String key : map.keySet()) {
+				String val = map.get(key);
+				if (val.equals("")) {
+					continue;
+				}
+
+				logger.info("copyRowData Begining---> "+key);
+				FileOutputStream fileOut = new FileOutputStream(destFile);
+				Sheet destSheet = destWb.getSheet(key);
+				copyRowData(destSheet, srcWb.getSheet(val));
+				destWb.write(fileOut);
+				fileOut.flush();
+				fileOut.close();
+				logger.info("copyRowData Completed---> "+key);
+			}
+			logger.info("---foreach sheetMap Completed---");
+
+			if (srcWb != null) {
+				srcWb.close();
+			}
+
+			if (destWb != null) {
+				destWb.close();
+			}
+			logger.info("-------conversion file Completed-------");
+		}catch (Exception e){
+			throw new Exception("conversion Exception: "+e);
 		}
-		
-		if (srcWb != null) {
-			srcWb.close();
-		}
-		
-		if (destWb != null) {
-			destWb.close();
-		}
+
+
 
 	}
 	
