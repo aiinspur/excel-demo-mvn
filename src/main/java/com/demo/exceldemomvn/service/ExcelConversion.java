@@ -31,7 +31,7 @@ public class ExcelConversion implements FileConversion {
 			String destFile = destFilePath + File.separator + "提供行领导" + dataDate + ".xls";
 			logger.info("destFile: " + destFile);
 
-			try (InputStream inp = new FileInputStream("D:\\excelTool\\template\\template_1.xls")) {
+			try (InputStream inp = new FileInputStream("D:\\excelTool\\template\\template_190108.xls")) {
 				wb = WorkbookFactory.create(inp);
 				fileOut_ = new FileOutputStream(destFile);
 				wb.write(fileOut_);
@@ -171,23 +171,23 @@ public class ExcelConversion implements FileConversion {
 		 */
 
 		map.put("目录", "");
-		map.put("R0030-2017_全行", "R0030-2017_全行_" + srcDate);
-		map.put("R0041", "R0041_全行_" + srcDate);
-		map.put("主动负债", "");
-		map.put("R0040_全行", "R0040_全行_" + srcDate);
-		map.put("R0061N-2017_全行", "R0061N-2017_全行_" + srcDate);
-		map.put("R0062N-2017_全行", "R0062N-2017_全行_" + srcDate);
-		map.put("R0061-2017_全行", "R0061-2017_全行_" + srcDate);
-		map.put("R0062-2017_全行", "R0062-2017_全行_" + srcDate);
-		map.put("R0008", "R0008-2017_全行_" + srcDate);
-		map.put("R0009", "R0009-2017_全行_" + srcDate);
-		map.put("R0010", "R0010-2017_全行_" + srcDate);
-		map.put("R0011", "R0011-2017_全行_" + srcDate);
-		map.put("R0012", "R0012-2017_全行_" + srcDate);
-		map.put("R0013", "R0013-2017_全行_" + srcDate);
-		map.put("R0014", "R0014-2017_全行_" + srcDate);
-		map.put("R0016", "R0016-2017_全行_" + srcDate);
-		map.put("R0021", "R0021-2017_全行_" + srcDate);
+		map.put("R0030", "R0030-2017_境内_" + srcDate);
+		map.put("R0041", "R0041_境内_" + srcDate);
+		map.put("主动负债", "ZDFZ_FAST_境内_" + srcDate);
+		map.put("R0040", "R0040_境内_" + srcDate);
+		map.put("R0061N", "R0061N-2017_境内_" + srcDate);
+		map.put("R0062N", "R0062N-2017_境内_" + srcDate);
+		map.put("R0061", "R0061-2017_境内_" + srcDate);
+		map.put("R0062", "R0062-2017_境内_" + srcDate);
+		map.put("R0008", "R0008-2017_境内_" + srcDate);
+		map.put("R0009", "R0009-2017_境内_" + srcDate);
+		map.put("R0010", "R0010-2017_境内_" + srcDate);
+		map.put("R0011", "R0011-2017_境内_" + srcDate);
+		map.put("R0012", "R0012-2017_境内_" + srcDate);
+		map.put("R0013", "R0013-2017_境内_" + srcDate);
+		map.put("R0014", "R0014-2017_境内_" + srcDate);
+		map.put("R0016", "R0016-2017_境内_" + srcDate);
+		//map.put("R0021", "R0021-2017_境内_" + srcDate);
 
 		return map;
 
