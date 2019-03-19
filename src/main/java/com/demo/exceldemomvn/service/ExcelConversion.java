@@ -7,10 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class ExcelConversion implements FileConversion {
@@ -31,7 +30,7 @@ public class ExcelConversion implements FileConversion {
 			String destFile = destFilePath + File.separator + "提供行领导" + dataDate + ".xls";
 			logger.info("destFile: " + destFile);
 
-			try (InputStream inp = new FileInputStream("D:\\excelTool\\template\\template_190108.xls")) {
+			try (InputStream inp = new FileInputStream("D:\\excelTool\\template\\template_190114.xls")) {
 				wb = WorkbookFactory.create(inp);
 				fileOut_ = new FileOutputStream(destFile);
 				wb.write(fileOut_);
@@ -53,18 +52,22 @@ public class ExcelConversion implements FileConversion {
 				destWb = WorkbookFactory.create(inp);
 			}
 
-
 			logger.info("foreach sheetMap Begining--->");
 			for (String key : map.keySet()) {
 				String val = map.get(key);
-				if (val.equals("")) {
+				if (!key.equals("目录") && val.equals("")) {
 					continue;
 				}
 
 				logger.info("copyRowData Begining---> "+key);
 				FileOutputStream fileOut = new FileOutputStream(destFile);
 				Sheet destSheet = destWb.getSheet(key);
-				copyRowData(destSheet, srcWb.getSheet(val));
+				if(key.equals("目录")){
+					updateDirectoryPage(dataDate, destSheet);
+				}else {
+					copyRowData(destSheet, srcWb.getSheet(val));
+				}
+
 				destWb.write(fileOut);
 				fileOut.flush();
 				fileOut.close();
@@ -87,59 +90,147 @@ public class ExcelConversion implements FileConversion {
 
 
 	}
-	
-	public void copyRowData(Sheet destSheet, Sheet srcSheet) {
-		int firstRowNum = srcSheet.getFirstRowNum();
-		int lastRowNum = srcSheet.getLastRowNum();
 
-		for (int i = firstRowNum; i <= lastRowNum; i++) {
-			Row srcRow = srcSheet.getRow(i);
-			Row destRow = destSheet.getRow(i);
-
-			if (srcRow == null || destRow == null) {
-				continue;
+	private void updateDirectoryPage(String dataDate, Sheet destSheet) throws ParseException {
+		if(destSheet.getPhysicalNumberOfRows() > 2){
+			Cell dateCell = destSheet.getRow(1).getCell(1);
+			Date tmpDate = new SimpleDateFormat("yyyyMMdd").parse(dataDate);
+			String showDate=new SimpleDateFormat("yyyy年MM月dd日").format(tmpDate);
+			if(dateCell != null){
+				dateCell.setCellValue(showDate);
 			}
+		}
+	}
 
-			short minColIx = srcRow.getFirstCellNum();
-			short maxColIx = srcRow.getLastCellNum();
-			for (short j = minColIx; j < maxColIx; j++) {
-				Cell cell = srcRow.getCell(j);
+	public void copyRowData(Sheet destSheet, Sheet srcSheet) {
+		if(srcSheet != null && destSheet != null){
+			int firstRowNum = srcSheet.getFirstRowNum() + 1;
+			int lastRowNum = srcSheet.getLastRowNum();
 
-				Cell destCell = destRow.getCell(j);
-				if (cell == null || destCell == null) {
+			for (int i = firstRowNum; i <= lastRowNum; i++) {
+				Row srcRow = srcSheet.getRow(i);
+				Row destRow = destSheet.getRow(i);
+
+				if (srcRow == null || destRow == null) {
 					continue;
 				}
 
-				CellType cellType = cell.getCellType();
-				switch (cellType) {
-				case STRING:
-					destCell.setCellValue(cell.getStringCellValue());
-					destCell.setCellType(CellType.STRING);
-					break;
-				case NUMERIC:
-					destCell.setCellValue(cell.getNumericCellValue());
-					destCell.setCellType(CellType.NUMERIC);
-					break;
-				case FORMULA:
-					destCell.setCellFormula(cell.getCellFormula());
-					destCell.setCellType(CellType.FORMULA);
-					break;
-				case BOOLEAN:
-					destCell.setCellValue(cell.getBooleanCellValue());
-					destCell.setCellType(CellType.BOOLEAN);
-					break;
-				case ERROR:
-					destCell.setCellValue(cell.getErrorCellValue());
-					destCell.setCellType(CellType.ERROR);
-					break;
-				default:
-					destCell.setCellValue(cell.getStringCellValue());
-					destCell.setCellType(CellType.STRING);
-					break;
+				short minColIx = srcRow.getFirstCellNum();
+				short maxColIx = srcRow.getLastCellNum();
+				for (short j = minColIx; j < maxColIx; j++) {
+					Cell cell = srcRow.getCell(j);
+
+					Cell destCell = destRow.getCell(j);
+					if (cell == null || destCell == null) {
+						continue;
+					}
+
+					CellType cellType = cell.getCellType();
+					switch (cellType) {
+						case STRING:
+							destCell.setCellValue(cell.getStringCellValue());
+							destCell.setCellType(CellType.STRING);
+							break;
+						case NUMERIC:
+							destCell.setCellValue(cell.getNumericCellValue());
+							destCell.setCellType(CellType.NUMERIC);
+							break;
+						case FORMULA:
+							destCell.setCellFormula(cell.getCellFormula());
+							destCell.setCellType(CellType.FORMULA);
+							break;
+						case BOOLEAN:
+							destCell.setCellValue(cell.getBooleanCellValue());
+							destCell.setCellType(CellType.BOOLEAN);
+							break;
+						case ERROR:
+							destCell.setCellValue(cell.getErrorCellValue());
+							destCell.setCellType(CellType.ERROR);
+							break;
+						default:
+							destCell.setCellValue(cell.getStringCellValue());
+							destCell.setCellType(CellType.STRING);
+							break;
+					}
 				}
 			}
-			
-			
+
+			String nullString = null;
+			Cell nullCell;
+			if(destSheet.getSheetName().equals("R0030")){
+				nullCell = destSheet.getRow(2).getCell(8);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+			}else if(destSheet.getSheetName().equals("R0041")){
+				nullCell = destSheet.getRow(2).getCell(5);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+				Cell nullCell2 = destSheet.getRow(2).getCell(6);
+				if(nullCell2 != null){
+					nullCell2.setCellValue(nullString);
+				}
+			}else if(destSheet.getSheetName().equals("R0061N")){
+				nullCell = destSheet.getRow(2).getCell(8);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+			}else if(destSheet.getSheetName().equals("R0062N")){
+				nullCell = destSheet.getRow(2).getCell(7);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+			}else if(destSheet.getSheetName().equals("R0061")){
+				nullCell = destSheet.getRow(2).getCell(7);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+			}else if(destSheet.getSheetName().equals("R0062")){
+				nullCell = destSheet.getRow(2).getCell(7);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+			}else if(destSheet.getSheetName().equals("R0008")){
+				nullCell = destSheet.getRow(2).getCell(7);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+				Cell nullCell2 = destSheet.getRow(2).getCell(9);
+				if(nullCell2 != null){
+					nullCell2.setCellValue(nullString);
+				}
+			}else if(destSheet.getSheetName().equals("R0009")){
+				nullCell = destSheet.getRow(2).getCell(8);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+			}else if(destSheet.getSheetName().equals("R0010")){
+				nullCell = destSheet.getRow(2).getCell(8);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+			}else if(destSheet.getSheetName().equals("R0012")){
+				nullCell = destSheet.getRow(2).getCell(9);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+			}else if(destSheet.getSheetName().equals("R0013")){
+				nullCell = destSheet.getRow(2).getCell(9);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+			}else if(destSheet.getSheetName().equals("R0014")){
+				nullCell = destSheet.getRow(2).getCell(7);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+			}else if(destSheet.getSheetName().equals("R0016")){
+				nullCell = destSheet.getRow(2).getCell(10);
+				if(nullCell != null){
+					nullCell.setCellValue(nullString);
+				}
+			}
 		}
 	}
 
@@ -177,11 +268,11 @@ public class ExcelConversion implements FileConversion {
 		map.put("R0040", "R0040_境内_" + srcDate);
 		map.put("R0061N", "R0061N-2017_境内_" + srcDate);
 		map.put("R0062N", "R0062N-2017_境内_" + srcDate);
-		map.put("R0061", "R0061-2017_境内_" + srcDate);
+		map.put("R0061", "R0061-2019_境内_" + srcDate);
 		map.put("R0062", "R0062-2017_境内_" + srcDate);
-		map.put("R0008", "R0008-2017_境内_" + srcDate);
+		map.put("R0008", "R0008-2019_境内_" + srcDate);
 		map.put("R0009", "R0009-2017_境内_" + srcDate);
-		map.put("R0010", "R0010-2017_境内_" + srcDate);
+		map.put("R0010", "R0010-2019_境内_" + srcDate);
 		map.put("R0011", "R0011-2017_境内_" + srcDate);
 		map.put("R0012", "R0012-2017_境内_" + srcDate);
 		map.put("R0013", "R0013-2017_境内_" + srcDate);
