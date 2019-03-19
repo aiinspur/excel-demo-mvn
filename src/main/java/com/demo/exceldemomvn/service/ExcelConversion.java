@@ -30,7 +30,7 @@ public class ExcelConversion implements FileConversion {
 			String destFile = destFilePath + File.separator + "提供行领导" + dataDate + ".xls";
 			logger.info("destFile: " + destFile);
 
-			try (InputStream inp = new FileInputStream("D:\\excelTool\\template\\template_190114.xls")) {
+			try (InputStream inp = new FileInputStream("D:\\excelTool\\template\\template_190319.xls")) {
 				wb = WorkbookFactory.create(inp);
 				fileOut_ = new FileOutputStream(destFile);
 				wb.write(fileOut_);
@@ -158,7 +158,7 @@ public class ExcelConversion implements FileConversion {
 			String nullString = null;
 			Cell nullCell;
 			if(destSheet.getSheetName().equals("R0030")){
-				nullCell = destSheet.getRow(2).getCell(8);
+				nullCell = destSheet.getRow(2).getCell(7);
 				if(nullCell != null){
 					nullCell.setCellValue(nullString);
 				}
@@ -262,7 +262,7 @@ public class ExcelConversion implements FileConversion {
 		 */
 
 		map.put("目录", "");
-		map.put("R0030", "R0030-2017_境内_" + srcDate);
+		map.put("R0030", "R0030-2019_境内_" + srcDate);
 		map.put("R0041", "R0041_境内_" + srcDate);
 		map.put("主动负债", "ZDFZ_FAST_境内_" + srcDate);
 		map.put("R0040", "R0040_境内_" + srcDate);
@@ -278,7 +278,7 @@ public class ExcelConversion implements FileConversion {
 		map.put("R0013", "R0013-2017_境内_" + srcDate);
 		map.put("R0014", "R0014-2017_境内_" + srcDate);
 		map.put("R0016", "R0016-2017_境内_" + srcDate);
-		//map.put("R0021", "R0021-2017_境内_" + srcDate);
+		map.put("R0017", "R0017-2019_境内_" + srcDate);
 
 		return map;
 
